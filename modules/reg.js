@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken');
 const authModel = require('./auth/models/model');
 require('dotenv').config();
 
-const auth = require('../middleware/auth');
+const auth = require('../middlewares/auth');
 
 // eslint-disable-next-line func-names
 router.get('/', function (req, res) {

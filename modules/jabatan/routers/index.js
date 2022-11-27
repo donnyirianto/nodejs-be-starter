@@ -1,7 +1,7 @@
 const express = require('express');
 const jabatanRoute = express.Router(); 
 const  Controller = require('../controllers/controller') 
-const auth = require("../../../middleware/auth");
+const auth = require("../../../middlewares/auth");
 
 //=================================
 //             Manage jabatan

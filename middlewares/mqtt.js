@@ -24,7 +24,7 @@ class MqttHandler {
 
   sendMessage(topic, message) {
     // console.log(message)
-    this.mqttClient.publish('${topic}/', message);
+    this.mqttClient.publish(topic, message);
   }
 }
 

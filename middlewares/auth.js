@@ -1,15 +1,9 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable camelcase */
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const authModel = require('../modules/auth/models/model');
 
-// var dateFormat = require("dateformat")();
-
 module.exports = {
   isAuth: (req, res, next) => {
-    // eslint-disable-next-line no-console
-    console.log(req.headers.authorization);
     try {
       const a = req.headers.authorization;
       const token = a.slice(7, a.length);

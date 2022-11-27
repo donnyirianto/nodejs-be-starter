@@ -1,8 +1,9 @@
-/* eslint-disable no-console */
-const zconn = async (host, user, password, database, port, queryx) => {
-  const mysql = require('mysql2/promise');
+const mysql = require('mysql2/promise');
+
+const anyconn = async (host, user, password, database, port, queryx) => {
+  // eslint-disable-next-line global-require
   const dbnya = {
-    /* don't expose password or any sensitive info, done only for demo */ host,
+    host,
     user,
     password,
     database,
@@ -13,7 +14,7 @@ const zconn = async (host, user, password, database, port, queryx) => {
 
   try {
     const conn = await mysql.createConnection(dbnya);
-    // eslint-disable-next-line func-names
+
     conn.connect(function (err) {
       if (err) throw err;
       console.log('Connected!');
@@ -23,9 +24,7 @@ const zconn = async (host, user, password, database, port, queryx) => {
     conn.end();
     return result;
   } catch (e) {
-    // console.log(queryx)
-    // console.log('Gagal Koneksi DB toko: ' + e)
-    return 'Gagal';
+    return 'Error Connection to DB Servers';
   }
 };
-module.exports = zconn;
+module.exports = anyconn;
