@@ -31,7 +31,7 @@ app.options('*', cors());
 app.use(compression());
 
 // Loging request
-app.use(morgan('combination'));
+app.use(morgan('dev'));
 app.use(useragent.express());
 // initial public folder
 app.use(express.static('public'));
@@ -39,7 +39,7 @@ app.use(express.static('public'));
 // ------------- Load All Routes --------------
 const api = require('./modules/index');
 
-app.use('/api/', api);
+app.use('/v1', api);
 // send back a 404 error for any unknown api request
 app.use((req, res, next) => {
   next(new ApiError(httpStatus.NOT_FOUND, 'Not found'));
