@@ -39,6 +39,7 @@
     "express-useragent": "^1.0.15",
     "helmet": "^6.0.0",
     "http-status": "^1.5.3",
+    "ioredis": "^5.2.4",
     "joi": "^17.7.0",
     "jsonwebtoken": "^8.5.1",
     "morgan": "^1.10.0",
@@ -46,7 +47,6 @@
     "multer": "^1.4.5-lts.1",
     "mysql2": "^2.3.3",
     "pako": "^2.1.0",
-    "redis": "^4.5.1",
     "winston": "^3.8.2",
     "xss-clean": "^0.1.1"
   }

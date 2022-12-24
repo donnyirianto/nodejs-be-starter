@@ -88,20 +88,20 @@ const generateAuthTokens = async (user) => {
     }
   };
 };
-// const refreshAuth = async (refreshToken) => {
-//   try {
-//     const refreshTokenDoc = await verifyToken(refreshToken, tokenTypes.REFRESH);
-//     const user = await userService.getUserById(refreshTokenDoc.user);
-//     if (!user) {
-//       throw new Error();
-//     }
-//     await refreshTokenDoc.remove();
-//     return generateAuthTokens(user);
-//   } catch (error) {
-//     throw new ApiError(httpStatus.UNAUTHORIZED, 'Please authenticate');
-//   }
-// };
-// /**
+const refreshAuth = async (refreshToken) => {
+  try {
+    const refreshTokenDoc = await verifyToken(refreshToken, tokenTypes.REFRESH);
+    const user = await userService.getUserById(refreshTokenDoc.user);
+    if (!user) {
+      throw new Error();
+    }
+    await refreshTokenDoc.remove();
+    return generateAuthTokens(user);
+  } catch (error) {
+    throw new ApiError(httpStatus.UNAUTHORIZED, 'Please authenticate');
+  }
+};
+/**
 //  * Generate reset password token
 //  * @param {string} email
 //  * @returns {Promise<string>}
@@ -133,8 +133,8 @@ module.exports = {
   generateToken,
   saveToken,
   verifyToken,
-  generateAuthTokens
-  // refreshAuth
+  generateAuthTokens,
+  refreshAuth
   // generateResetPasswordToken,
   // generateVerifyEmailToken
 };

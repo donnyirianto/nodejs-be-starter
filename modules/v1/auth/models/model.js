@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt');
-const conn = require('../../../services/db');
-const config = require('../../../config/config');
+const conn = require('../../../../services/db');
+const config = require('../../../../config/config');
 
 /**
  * Login with username and password

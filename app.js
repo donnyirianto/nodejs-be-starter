@@ -37,7 +37,7 @@ app.use(useragent.express());
 app.use(express.static('public'));
 
 // ------------- Load All Routes --------------
-const api = require('./modules/index');
+const api = require('./modules/v1/index');
 
 app.use('/v1', api);
 // send back a 404 error for any unknown api request
