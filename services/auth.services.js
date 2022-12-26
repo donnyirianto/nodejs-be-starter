@@ -1,10 +1,10 @@
 const jwt = require('jsonwebtoken');
 const dayjs = require('dayjs');
-// const httpStatus = require('http-status');
+const httpStatus = require('http-status');
 const config = require('../config/config');
 // const userService = require('./user.service');
 const redis = require('./redis.service');
-// const ApiError = require('../utils/ApiError');
+const ApiError = require('../utils/ApiError');
 const { tokenTypes } = require('../config/tokens');
 
 /**
@@ -51,18 +51,23 @@ const saveToken = async (token, userId, expires, type, blacklisted = false) => {
 /**
  * Verify token and return token doc (or throw an error if it is not valid)
  * @param {string} token
- * @param {string} type
  * @returns {Promise<Token>}
  */
 const verifyToken = async (token) => {
   const payload = jwt.verify(token, config.jwt.secret);
-  const tokenDoc = await redis.get(payload.sub);
+  // console.log(`hasil verify: ${JSON.stringify(payload)}`);
+  // const tokenDoc = await Token.findOne({ token, type, user: payload.sub, blacklisted: false });
+  const tokenDoc = await redis.get(payload.sub[0].nik);
   if (!tokenDoc) {
     throw new Error('Token not found');
   }
   return tokenDoc;
 };
-
+/* 
+=======================================================================================
+=======================================================================================
+=======================================================================================
+*/
 /**
  * Generate auth tokens
  * @param {User} user
@@ -70,12 +75,12 @@ const verifyToken = async (token) => {
  */
 const generateAuthTokens = async (user) => {
   const accessTokenExpires = dayjs().add(config.jwt.accessExpirationMinutes, 'minutes');
-  const accessToken = generateToken(user.username, accessTokenExpires, tokenTypes.ACCESS);
+  const accessToken = generateToken(user, accessTokenExpires, tokenTypes.ACCESS);
 
   const refreshTokenExpires = dayjs().add(config.jwt.refreshExpirationDays, 'days');
-  const refreshToken = generateToken(user.username, refreshTokenExpires, tokenTypes.REFRESH);
+  const refreshToken = generateToken(user, refreshTokenExpires, tokenTypes.REFRESH);
 
-  await saveToken(refreshToken, user.username, refreshTokenExpires, tokenTypes.REFRESH);
+  await saveToken(refreshToken, user[0].nik, refreshTokenExpires, tokenTypes.REFRESH);
 
   return {
     access: {
@@ -88,19 +93,34 @@ const generateAuthTokens = async (user) => {
     }
   };
 };
-const refreshAuth = async (refreshToken) => {
-  try {
-    const refreshTokenDoc = await verifyToken(refreshToken, tokenTypes.REFRESH);
-    const user = await userService.getUserById(refreshTokenDoc.user);
-    if (!user) {
-      throw new Error();
-    }
-    await refreshTokenDoc.remove();
-    return generateAuthTokens(user);
-  } catch (error) {
-    throw new ApiError(httpStatus.UNAUTHORIZED, 'Please authenticate');
+
+const logout = async (refreshToken) => {
+  const refreshTokenDoc = await verifyToken(refreshToken, tokenTypes.REFRESH);
+
+  if (!refreshTokenDoc) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Not found');
   }
+  await redis.del(JSON.parse(refreshTokenDoc).nik);
 };
+
+/**
+ * Refresh auth tokens
+ * @param {string} refreshToken
+ * @returns {Promise<Object>}
+ */
+// const refreshAuth = async (refreshToken) => {
+//   try {
+//     const refreshTokenDoc = await verifyToken(refreshToken, tokenTypes.REFRESH);
+//     const user = await userService.getUserById(refreshTokenDoc.user);
+//     if (!user) {
+//        throw new Error();
+//     }
+//     await redis.del(refreshTokenDoc.user.id);
+//     return tokenService.generateAuthTokens(user);
+//   } catch (error) {
+//     throw new ApiError(httpStatus.UNAUTHORIZED, 'Please authenticate');
+//   }
+// };
 /**
 //  * Generate reset password token
 //  * @param {string} email
@@ -134,7 +154,8 @@ module.exports = {
   saveToken,
   verifyToken,
   generateAuthTokens,
-  refreshAuth
+  logout
+  // refreshAuth
   // generateResetPasswordToken,
   // generateVerifyEmailToken
 };

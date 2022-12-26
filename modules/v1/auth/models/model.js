@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
 const conn = require('../../../../services/db');
-const config = require('../../../../config/config');
+
+// const config = require('../../../../config/config');
 
 /**
  * Login with username and password
@@ -8,33 +9,17 @@ const config = require('../../../../config/config');
  * @param {string} password
  */
 const loginUserWithUsernameAndPassword = async (username, password) => {
-  const [user] = await conn.query(
+  const user = await conn.query(
     `SELECT nik,username,nama,password FROM m_users Where  username= ? `,
     username
   );
+
   // const hash = bcrypt.hashSync(password, 10);
   // console.log(hash);
-  const checkpass = bcrypt.compareSync(password, user.password);
+  const checkpass = bcrypt.compareSync(password, user[0].password);
 
   return { user, checkpass };
 };
-
-// /**
-//  * Logout
-//  * @param {string} refreshToken
-//  * @returns {Promise}
-//  */
-// const logout = async (refreshToken) => {
-//   const refreshTokenDoc = await Token.findOne({
-//     token: refreshToken,
-//     type: tokenTypes.REFRESH,
-//     blacklisted: false
-//   });
-//   if (!refreshTokenDoc) {
-//     throw new ApiError(httpStatus.NOT_FOUND, 'Not found');
-//   }
-//   await refreshTokenDoc.remove();
-// };
 
 // /**
 //  * Refresh auth tokens
@@ -102,7 +87,6 @@ const loginUserWithUsernameAndPassword = async (username, password) => {
 
 module.exports = {
   loginUserWithUsernameAndPassword
-  //   logout,
   //   refreshAuth,
   //   resetPassword,
   //   verifyEmail

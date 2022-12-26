@@ -6,6 +6,11 @@ const authRoute = express.Router();
 const authController = require('../controllers/controller');
 
 authRoute.post('/login', validate(authValidation.login), authController.login);
-authRoute.post('/refreshtoken', validate(authValidation.login), authController.refreshTokens);
+authRoute.post('/logout', validate(authValidation.logout), authController.logout);
+authRoute.post(
+  '/refreshtoken',
+  validate(authValidation.refreshTokens),
+  authController.refreshTokens
+);
 
 module.exports = authRoute;

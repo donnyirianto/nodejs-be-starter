@@ -19,7 +19,9 @@ const envVarsSchema = Joi.object()
     DB_USER: Joi.string().required().description('Database MySQL USERNAME'),
     DB_PASS: Joi.string().required().description('Database MySQL PASSWORD'),
     DB_PORT: Joi.string().required().description('Database MySQL PORT'),
-    DB_POOLING_LIMIT: Joi.string().required().description('Database MySQL POOLING LIMIT')
+    DB_POOLING_LIMIT: Joi.string().required().description('Database MySQL POOLING LIMIT'),
+    REDIS_HOST: Joi.string().required().description('REDIS HOST'),
+    REDIS_PORT: Joi.string().required().description('REDIS PORT')
   })
   .unknown();
 
@@ -50,5 +52,9 @@ module.exports = {
     queueLimit: 0,
     dateStrings: true,
     multipleStatements: true
+  },
+  redis: {
+    host: envVars.REDIS_HOST,
+    port: envVars.REDIS_PORT
   }
 };
